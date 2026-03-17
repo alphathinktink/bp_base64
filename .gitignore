@@ -1,0 +1,15 @@
+*.obj
+*.o
+*.exe
+*.dll
+*.log
+*.tds
+*.ilk
+*.pdb
+*.map
+*.res
+*.dcu
+*.local
+*.identcache
+.vs/
+build/

@@ -1,0 +1,28 @@
+BuilderCodeModelV4
+F	C:\\Builder Projects\\Base64\\EncodeDecodeThreadUnit.cpp	134182633938862379
+D	c:\\builder projects\\base64\\encodedecodethreadunit.cpp
+D	c:\\builder projects\\base64\\encodedecodethreadunit.h
+F	C:\\Builder Projects\\Base64\\EncodeDecodeThreadUnit.h	134182633938862379
+D	c:\\builder projects\\base64\\encodedecodethreadunit.h
+F	C:\\Builder Projects\\Base64\\MainWindowResource.h	134182631306956313
+D	c:\\builder projects\\base64\\mainwindowresource.h
+F	C:\\Builder Projects\\Base64\\MainWindowResource.rc	134182631306956313
+D	c:\\builder projects\\base64\\mainwindowresource.h
+D	c:\\builder projects\\base64\\mainwindowresource.rc
+F	C:\\Builder Projects\\Base64\\MainWindowUnit.cpp	134182638083752635
+S	class	TDerp	TDerp		6	7	1
+T	class	TDerp	TDerp	6	7
+D	c:\\builder projects\\base64\\encodedecodethreadunit.h
+D	c:\\builder projects\\base64\\mainwindowresource.h
+D	c:\\builder projects\\base64\\mainwindowunit.cpp
+D	c:\\builder projects\\base64\\mainwindowunit.h
+F	C:\\Builder Projects\\Base64\\MainWindowUnit.h	134182631788126495
+D	c:\\builder projects\\base64\\mainwindowunit.h
+F	C:\\Builder Projects\\Base64\\WinMainUnit.cpp	134182632205368001
+S	function	wWinMain	wWinMain		5	12	1
+V	hInstance	wWinMain	HINSTANCE	HINSTANCE	5	31	1
+V	hPrevInstance	wWinMain	HINSTANCE	HINSTANCE	5	52	1
+V	pCmdLine	wWinMain	LPWSTR	LPWSTR	5	74	1
+V	nCmdShow	wWinMain	int	int	5	88	1
+D	c:\\builder projects\\base64\\mainwindowunit.h
+D	c:\\builder projects\\base64\\winmainunit.cpp
