@@ -4,6 +4,7 @@
 //---------------------------------------------------------------------------
 
 #include <windows.h>
+#include <shellapi.h>
 #include "UniString.h"
 
 namespace EncodeDecodeThread { class TWorker; }
@@ -21,6 +22,7 @@ private:
         HWND FBtnEncodeBrowse;
         HWND FBtnDecodeBrowse;
         HWND FBtnQuit;
+        WNDPROC FEncodeFileEditOrigProc;
 
         EncodeDecodeThread::TWorker *FWorker;
 
@@ -30,6 +32,10 @@ private:
         void __fastcall StartDecode(void);
         void __fastcall BrowseForEncodeFile(void);
         void __fastcall BrowseForDecodeFile(void);
+        void __fastcall InitDragAndDrop(void);
+        void __fastcall HandleEncodeFileDrop(HDROP hDrop);
+
+        static LRESULT CALLBACK EncodeFileEditProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam);
 
         UniString __fastcall GetEncodeFilePath(void) const;
         UniString __fastcall GetDecodeFilePath(void) const;
