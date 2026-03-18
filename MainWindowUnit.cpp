@@ -167,6 +167,14 @@ void __fastcall TMainWindow::InitDragAndDrop(void)
 {
         if(!FEditEncodeFile) return;
 
+        LONG_PTR exStyle=::GetWindowLongPtrW(FEditEncodeFile,GWL_EXSTYLE);
+        if((exStyle & WS_EX_ACCEPTFILES)==0)
+        {
+                ::SetWindowLongPtrW(FEditEncodeFile,GWL_EXSTYLE,exStyle | WS_EX_ACCEPTFILES);
+                ::SetWindowPos(FEditEncodeFile,NULL,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        }
+
         ::DragAcceptFiles(FEditEncodeFile,TRUE);
         ::SetWindowLongPtrW(FEditEncodeFile,GWLP_USERDATA,(LONG_PTR)this);
         FEncodeFileEditOrigProc=(WNDPROC)::SetWindowLongPtrW(FEditEncodeFile,GWLP_WNDPROC,(LONG_PTR)&TMainWindow::EncodeFileEditProc);
