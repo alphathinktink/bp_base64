@@ -126,7 +126,7 @@ AnsiString MimeTypeFromFileName(const UniString &FileName)
         {
                 if(::AssocQueryStringW(0,ASSOCSTR_CONTENTTYPE,ext.c_bstr(),NULL,buf,&cch)==S_OK)
                 {
-                        return AnsiString(UniString(buf));
+                        return CommonFuncs::UniStringToMBCS(UniString(buf));
                 }
         }
         return "application/octet-stream";
