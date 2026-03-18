@@ -5,6 +5,7 @@
 #include "ItsAMysteryUnit.h"
 #include "CommonFuncsUnit.h"
 #include <winreg.h>
+#include <shellapi.h>
 
 using namespace EncodeDecodeThread;
 
@@ -136,7 +137,7 @@ static UniString BuildSuggestedDecodePath(const UniString &ExistingPath,const Un
 }
 
 __fastcall TMainWindow::TMainWindow(void)
-: FHandle(NULL),FEditBase64(NULL),FEditEncodeFile(NULL),FEditDecodeFile(NULL),FBtnDecode(NULL),FBtnEncode(NULL),FBtnUriEncode(NULL),FBtnEncodeBrowse(NULL),FBtnDecodeBrowse(NULL),FBtnQuit(NULL),FWorker(NULL)
+: FHandle(NULL),FEditBase64(NULL),FEditEncodeFile(NULL),FEditDecodeFile(NULL),FBtnDecode(NULL),FBtnEncode(NULL),FBtnUriEncode(NULL),FBtnEncodeBrowse(NULL),FBtnDecodeBrowse(NULL),FBtnQuit(NULL),FEncodeFileEditOrigProc(NULL),FWorker(NULL)
 {
 }
 //---------------------------------------------------------------------------
@@ -160,6 +161,98 @@ void __fastcall TMainWindow::CacheControls(void)
         FBtnEncodeBrowse=::GetDlgItem(FHandle,IDC_FILEENCODEBROWSE_BUTTON);
         FBtnDecodeBrowse=::GetDlgItem(FHandle,IDC_FILEDECODEBROWSE_BUTTON);
         FBtnQuit=::GetDlgItem(FHandle,IDC_QUIT_BUTTON);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainWindow::InitDragAndDrop(void)
+{
+        if(!FEditEncodeFile) return;
+
+        LONG_PTR exStyle=::GetWindowLongPtrW(FEditEncodeFile,GWL_EXSTYLE);
+        if((exStyle & WS_EX_ACCEPTFILES)==0)
+        {
+                ::SetWindowLongPtrW(FEditEncodeFile,GWL_EXSTYLE,exStyle | WS_EX_ACCEPTFILES);
+                ::SetWindowPos(FEditEncodeFile,NULL,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
+        }
+
+        ::SetWindowPos(FEditEncodeFile,HWND_TOP,0,0,0,0,
+                SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        if(FBtnEncodeBrowse)
+        {
+                ::SetWindowPos(FBtnEncodeBrowse,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+        if(FBtnEncode)
+        {
+                ::SetWindowPos(FBtnEncode,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+        if(FBtnUriEncode)
+        {
+                ::SetWindowPos(FBtnUriEncode,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+
+        ::DragAcceptFiles(FEditEncodeFile,TRUE);
+        ::SetWindowLongPtrW(FEditEncodeFile,GWLP_USERDATA,(LONG_PTR)this);
+        FEncodeFileEditOrigProc=(WNDPROC)::SetWindowLongPtrW(FEditEncodeFile,GWLP_WNDPROC,(LONG_PTR)&TMainWindow::EncodeFileEditProc);
+}
+//---------------------------------------------------------------------------
+void __fastcall TMainWindow::HandleEncodeFileDrop(HDROP hDrop)
+{
+        if(!hDrop) return;
+
+        UINT fileCount=::DragQueryFileW(hDrop,0xFFFFFFFF,NULL,0);
+        if(fileCount!=1)
+        {
+                ::MessageBoxW(FHandle,L"Please drop exactly one file into the encode path field.",L"Base64",MB_ICONWARNING|MB_OK);
+                return;
+        }
+
+        wchar_t fileName[MAX_PATH];
+        fileName[0]=0;
+        if(::DragQueryFileW(hDrop,0,fileName,MAX_PATH)<=0)
+        {
+                ::MessageBoxW(FHandle,L"Unable to read the dropped file path.",L"Base64",MB_ICONERROR|MB_OK);
+                return;
+        }
+
+        ::SetWindowTextW(FEditEncodeFile,fileName);
+        ::SetFocus(FEditEncodeFile);
+        ::SendMessageW(FEditEncodeFile,EM_SETSEL,(WPARAM)-1,(LPARAM)-1);
+}
+//---------------------------------------------------------------------------
+LRESULT CALLBACK TMainWindow::EncodeFileEditProc(HWND hwnd,UINT uMsg,WPARAM wParam,LPARAM lParam)
+{
+        TMainWindow *self=(TMainWindow *)::GetWindowLongPtrW(hwnd,GWLP_USERDATA);
+        if(self)
+        {
+                switch(uMsg)
+                {
+                        case WM_DROPFILES:
+                        {
+                                HDROP hDrop=(HDROP)wParam;
+                                self->HandleEncodeFileDrop(hDrop);
+                                ::DragFinish(hDrop);
+                                return 0;
+                        }
+                        case WM_NCDESTROY:
+                                if(self->FEncodeFileEditOrigProc)
+                                {
+                                        ::SetWindowLongPtrW(hwnd,GWLP_WNDPROC,(LONG_PTR)self->FEncodeFileEditOrigProc);
+                                        LRESULT result=::CallWindowProcW(self->FEncodeFileEditOrigProc,hwnd,uMsg,wParam,lParam);
+                                        self->FEncodeFileEditOrigProc=NULL;
+                                        ::SetWindowLongPtrW(hwnd,GWLP_USERDATA,0);
+                                        return result;
+                                }
+                                break;
+                }
+                if(self->FEncodeFileEditOrigProc)
+                {
+                        return ::CallWindowProcW(self->FEncodeFileEditOrigProc,hwnd,uMsg,wParam,lParam);
+                }
+        }
+        return ::DefWindowProcW(hwnd,uMsg,wParam,lParam);
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainWindow::SetBusy(bool Busy)
@@ -308,6 +401,7 @@ INT_PTR CALLBACK TMainWindow::DialogProc(HWND hwndDlg,UINT uMsg,WPARAM wParam,LP
                 ::SetWindowLongPtrW(hwndDlg,DWLP_USER,(LONG_PTR)self);
                 self->FHandle=hwndDlg;
                 self->CacheControls();
+                self->InitDragAndDrop();
                 return TRUE;
         }
         if(self) return self->HandleMessage(uMsg,wParam,lParam);
