@@ -175,6 +175,24 @@ void __fastcall TMainWindow::InitDragAndDrop(void)
                         SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE|SWP_FRAMECHANGED);
         }
 
+        ::SetWindowPos(FEditEncodeFile,HWND_TOP,0,0,0,0,
+                SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        if(FBtnEncodeBrowse)
+        {
+                ::SetWindowPos(FBtnEncodeBrowse,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+        if(FBtnEncode)
+        {
+                ::SetWindowPos(FBtnEncode,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+        if(FBtnUriEncode)
+        {
+                ::SetWindowPos(FBtnUriEncode,HWND_TOP,0,0,0,0,
+                        SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+        }
+
         ::DragAcceptFiles(FEditEncodeFile,TRUE);
         ::SetWindowLongPtrW(FEditEncodeFile,GWLP_USERDATA,(LONG_PTR)this);
         FEncodeFileEditOrigProc=(WNDPROC)::SetWindowLongPtrW(FEditEncodeFile,GWLP_WNDPROC,(LONG_PTR)&TMainWindow::EncodeFileEditProc);
