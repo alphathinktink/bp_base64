@@ -32,10 +32,9 @@ __fastcall TBPIniFile::~TBPIniFile(void)
 //---------------------------------------------------------------------------
 void __fastcall TBPIniFile::DeleteKey(const UniString Section, const UniString Ident)
 {
-        UniString S=UniStringToMBCS(Section),I=UniStringToMBCS(Ident);
         ::WritePrivateProfileStringW(
-                S.c_bstr(),
-                I.c_bstr(),
+                Section.c_bstr(),
+                Ident.c_bstr(),
                 NULL,
                 FFile.c_bstr()
         );
@@ -68,10 +67,9 @@ UniString __fastcall TBPIniFile::ReadString(const UniString Section, const UniSt
         UniString Res=Default;
         DWORD res;
         wchar_t *buffer=new wchar_t[65536];
-        UniString S=UniStringToMBCS(Section),I=UniStringToMBCS(Ident);
         res=::GetPrivateProfileStringW(
-                S.c_bstr(),
-                I.c_bstr(),
+                Section.c_bstr(),
+                Ident.c_bstr(),
                 Res.c_bstr(),
                 buffer,
                 65536-1,
@@ -80,7 +78,7 @@ UniString __fastcall TBPIniFile::ReadString(const UniString Section, const UniSt
         if(res>0)
         {
                 buffer[res]='\0';
-                Res=MBCSToUniString(buffer);
+                Res=UniString(buffer);
         }
         delete [] buffer;
         return Res;
@@ -88,11 +86,10 @@ UniString __fastcall TBPIniFile::ReadString(const UniString Section, const UniSt
 //---------------------------------------------------------------------------
 void __fastcall TBPIniFile::WriteString(const UniString Section, const UniString Ident, const UniString Value)
 {
-        UniString S=UniStringToMBCS(Section),I=UniStringToMBCS(Ident),V=UniStringToMBCS(Value);
         ::WritePrivateProfileStringW(
-                S.c_bstr(),
-                I.c_bstr(),
-                V.c_bstr(),
+                Section.c_bstr(),
+                Ident.c_bstr(),
+                Value.c_bstr(),
                 FFile.c_bstr()
         );
 }
@@ -118,7 +115,7 @@ UniString __fastcall TBPIniFile::ReadSections(void)
                 UniString Temp=temp;
                 while(Temp.Length()>0)
                 {
-                        if(Res!=NULL)
+                        if(Res!=L"")
                         {
                                 Res+=L"\r\n";
                         }
