@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------------------------
 #include <windows.h>
+#include <commctrl.h>
 #include "MainWindowUnit.h"
 #include "EncodeDecodeThreadUnit.h"
 #include "UniString.h"
@@ -14,7 +15,20 @@ HINSTANCE hGlobalInstance=NULL;
 //------------------------------------------------------------------------------------------
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR pCmdLine, int nCmdShow)
 {
-	hGlobalInstance=hInstance;
-	return 0;
+        hGlobalInstance=hInstance;
+
+        INITCOMMONCONTROLSEX icc;
+        icc.dwSize=sizeof(icc);
+        icc.dwICC=ICC_WIN95_CLASSES|ICC_STANDARD_CLASSES;
+        InitCommonControlsEx(&icc);
+
+        TMainWindow mainWindow;
+        if(!mainWindow.Create(hInstance,nCmdShow))
+        {
+                ::MessageBoxW(NULL,L"Unable to create Base64 main window.",L"Base64",MB_ICONERROR|MB_OK);
+                return 1;
+        }
+
+        return mainWindow.Run();
 }
 //------------------------------------------------------------------------------------------
