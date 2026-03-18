@@ -13,11 +13,13 @@ class TMainWindow
 private:
         HWND FHandle;
         HWND FEditBase64;
-        HWND FEditFile;
+        HWND FEditEncodeFile;
+        HWND FEditDecodeFile;
         HWND FBtnDecode;
         HWND FBtnEncode;
         HWND FBtnUriEncode;
-        HWND FBtnBrowse;
+        HWND FBtnEncodeBrowse;
+        HWND FBtnDecodeBrowse;
         HWND FBtnQuit;
 
         EncodeDecodeThread::TWorker *FWorker;
@@ -26,9 +28,11 @@ private:
         void __fastcall SetBusy(bool Busy);
         void __fastcall StartEncode(bool AsDataUri);
         void __fastcall StartDecode(void);
-        void __fastcall BrowseForFile(void);
+        void __fastcall BrowseForEncodeFile(void);
+        void __fastcall BrowseForDecodeFile(void);
 
-        UniString __fastcall GetFilePath(void) const;
+        UniString __fastcall GetEncodeFilePath(void) const;
+        UniString __fastcall GetDecodeFilePath(void) const;
         AnsiString __fastcall GetBase64Text(void) const;
         void __fastcall SetBase64Text(const AnsiString &Text);
 
