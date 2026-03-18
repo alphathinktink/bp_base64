@@ -21,7 +21,7 @@
         <LangID>1033</LangID>
         <CodePage>1200</CodePage>
         <FileFlagsMask>63</FileFlagsMask>
-        <FileFlags>0</FileFlags>
+        <FileFlags>1</FileFlags>
         <FileOS>4</FileOS>
         <FileType>1</FileType>
         <FileSubtype>0</FileSubtype>
@@ -45,8 +45,8 @@
     <AliasingMode>0</AliasingMode>
     <FunctionSections>0</FunctionSections>
     <DataSections>0</DataSections>
-    <InlineMode>0</InlineMode>
-    <FramePtrMode>0</FramePtrMode>
+    <InlineMode>2</InlineMode>
+    <FramePtrMode>2</FramePtrMode>
     <ISA_SSE>0</ISA_SSE>
     <ISA_SSE2>0</ISA_SSE2>
     <ISA_SSE3>0</ISA_SSE3>
@@ -56,13 +56,13 @@
     <ISA_AVX>0</ISA_AVX>
     <ISA_AVX2>0</ISA_AVX2>
     <ISA_AVX512F>0</ISA_AVX512F>
-    <DebugLevel>0</DebugLevel>
-    <DebugCodeView>0</DebugCodeView>
+    <DebugLevel>3</DebugLevel>
+    <DebugCodeView>1</DebugCodeView>
     <EnableGprof>0</EnableGprof>
     <ASan>0</ASan>
     <UBSan>0</UBSan>
     <LeakSan>0</LeakSan>
-    <AsyncUnwindMode>0</AsyncUnwindMode>
+    <AsyncUnwindMode>1</AsyncUnwindMode>
     <SSPLevel>0</SSPLevel>
     <FortifyLevel>0</FortifyLevel>
     <VisHidden>0</VisHidden>
@@ -71,7 +71,7 @@
     <StaticLibStdCxx>0</StaticLibStdCxx>
     <ThreadModel>0</ThreadModel>
     <LinkStrip>0</LinkStrip>
-    <LinkMapEnable>0</LinkMapEnable>
+    <LinkMapEnable>1</LinkMapEnable>
     <LinkAutoImportMode>0</LinkAutoImportMode>
     <LinkDynamicBase>0</LinkDynamicBase>
     <LinkNxCompat>0</LinkNxCompat>
@@ -101,14 +101,16 @@
     <LinkUseGroup>0</LinkUseGroup>
     <LinkAsNeeded>0</LinkAsNeeded>
     <BuildArch>x86</BuildArch>
-    <ConfigStampUtcCompile>134182663984596973</ConfigStampUtcCompile>
-    <LinkStampUtcCompile>134182663984596973</LinkStampUtcCompile>
-    <VersionStampUtcCompile>134182663984596973</VersionStampUtcCompile>
+    <ConfigStampUtcCompile>134182668865411024</ConfigStampUtcCompile>
+    <LinkStampUtcCompile>134182668865411024</LinkStampUtcCompile>
+    <VersionStampUtcCompile>134182668865411024</VersionStampUtcCompile>
     <CustomActions>
         <Action ID="20329296" Scope="1" Enabled="1" ShowInToolbar="1" Dropdown="0" ConfirmBeforeRun="1" Caption="Repo Pull" Command="~pull.bat" IconBase64="AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHJ1eN9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3J1eN9zdnj/+vr6//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6//Dw7/+npaP/+vr6//r6+v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6/9fV0/+BfXb/bmtm/3NxbP/a2tn/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/6+vr/+vr6//r6+v/h4N7/gXty//r6+v9wbGf/29va//r6+v/6+vr/+vr6/3N2eP9zdnj/+vr6//r6+v/6+vr/+vr6//r6+v+2sKn/pZ2V/5CMgv+DfXP/g353/9XT0v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6/9LNyP+0rKT/rKSb/6ihmP+rpJz/oJqS//Lx8P/6+vr/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/Z1M//tKyj/+Lf2//g3dr/q6Ob/9HNyP/6+vr/+vr6//r6+v/6+vr/+vr6/3N2eP9zdnj/+vr6//r6+v/6+vr/3NfT/7qxqP/l4d7/4+Dc/7Con//U0cz/+vr6//r6+v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6/9rVz//Du7L/vLOq/7mwp/+6san/0s3I//r6+v/6+vr/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/6+vr/+vr6/8zEvP/Kwrr/+vr6//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/8TExP9zdnj/xMTE/3N2eP9zdnj/c3V433N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3V43wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAA=="/>
         <Action ID="20342421" Scope="1" Enabled="1" ShowInToolbar="1" Dropdown="0" ConfirmBeforeRun="1" Caption="Repo Push" Command="~push.bat" IconBase64="AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHJ1eN9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3J1eN9zdnj/+vr6//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6//Dw7/+npaP/+vr6//r6+v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6/9fV0/+BfXb/bmtm/3NxbP/a2tn/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/6+vr/+vr6//r6+v/h4N7/gXty//r6+v9wbGf/29va//r6+v/6+vr/+vr6/3N2eP9zdnj/+vr6//r6+v/6+vr/+vr6//r6+v+2sKn/pZ2V/5CMgv+DfXP/g353/9XT0v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6/9LNyP+0rKT/rKSb/6ihmP+rpJz/oJqS//Lx8P/6+vr/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/Z1M//tKyj/+Lf2//g3dr/q6Ob/9HNyP/6+vr/+vr6//r6+v/6+vr/+vr6/3N2eP9zdnj/+vr6//r6+v/6+vr/3NfT/7qxqP/l4d7/4+Dc/7Con//U0cz/+vr6//r6+v/6+vr/+vr6//r6+v9zdnj/c3Z4//r6+v/6+vr/+vr6/9rVz//Du7L/vLOq/7mwp/+6san/0s3I//r6+v/6+vr/+vr6//r6+v/6+vr/c3Z4/3N2eP/6+vr/+vr6//r6+v/6+vr/+vr6/8zEvP/Kwrr/+vr6//r6+v/6+vr/+vr6//r6+v/6+vr/+vr6/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/8TExP9zdnj/xMTE/3N2eP9zdnj/c3V433N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3Z4/3N2eP9zdnj/c3V43wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//8AAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAA=="/>
     </CustomActions>
-    <Conditionals>_UNICODE;UNICODE;NOVTABLE=;_WIN32_WINNT=0x0501;NDEBUG</Conditionals>
+    <OptLevel>O0</OptLevel>
+    <LinkMapFile>link.map</LinkMapFile>
+    <Conditionals>_UNICODE;UNICODE;NOVTABLE=;_WIN32_WINNT=0x0501;DEBUG;_DEBUG</Conditionals>
     <IncludesPaths></IncludesPaths>
     <LibrariesPaths></LibrariesPaths>
     <Files>

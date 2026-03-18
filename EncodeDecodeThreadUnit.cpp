@@ -193,7 +193,10 @@ void __fastcall TWorker::Execute(TResult &Result)
                                 return;
                         }
                         AnsiString tmp;
-                        for(size_t i=0;i<outLen;i++) tmp+=encoded[i];
+                        //for(size_t i=0;i<outLen;i++) tmp+=encoded[i];
+						tmp.SetLength(outLen);
+						tmp.c_str()[outLen]='\0';
+						memcpy(tmp.c_str(),encoded,outLen);
                         Result.OutputText=tmp;
                         free(encoded);
                         Result.Success=true;
@@ -217,7 +220,10 @@ void __fastcall TWorker::Execute(TResult &Result)
                         }
                         AnsiString mime=MimeTypeFromFileName(FRequest.FileName);
                         AnsiString tmp;
-                        for(size_t i=0;i<outLen;i++) tmp+=encoded[i];
+                        //for(size_t i=0;i<outLen;i++) tmp+=encoded[i];
+						tmp.SetLength(outLen);
+						tmp.c_str()[outLen]='\0';
+						memcpy(tmp.c_str(),encoded,outLen);
                         Result.OutputText="data:"+mime+";base64,"+tmp;
                         free(encoded);
                         Result.Success=true;
