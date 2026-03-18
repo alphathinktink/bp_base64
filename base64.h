@@ -3,7 +3,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "bfc\platform\types.h"
+//#include "bfc\platform\types.h"
 #include "stdint.h"
 #pragma option push -w-csu
 namespace AAbase64{
