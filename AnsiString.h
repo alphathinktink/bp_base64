@@ -1,4 +1,3 @@
-// See LICENSE file for usage restrictions.
 //---------------------------------------------------------------------------
 #ifndef AnsiStringH
 #define AnsiStringH
@@ -6,16 +5,13 @@
 #include <string.h>
 #include <windows.h>
 #include <stdio.h>
+#include <stdarg.h>
+#ifndef va_copy
+#define va_copy(Dest,Src) ((Dest)=(Src))
+#endif
 using namespace std;
 #ifdef _DEBUG
-#ifdef __GNUC__
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wnonnull-compare"
-#endif//__GNUC__
 #define tcheck if(this==NULL){throw ("Argh! This is NULL!!!!");}
-#ifdef __GNUC__
-	#pragma GCC diagnostic pop
-#endif//__GNUC__
 #else
 #define tcheck
 #endif
@@ -62,9 +58,9 @@ private:
                 if(U)
                 {
                         //__try{::LocalFree(U);}__except(1){}
-                        if(!::HeapValidate(hProcessHeap,0,U))
+                        if(!HeapValidate(hProcessHeap,0,U))
                         {
-								return;
+                                return;
                         }
                         ::HeapFree(hProcessHeap,0,U);
                         //__try{::HeapFree(hProcessHeap,0,U);}__except(1){}
@@ -98,6 +94,63 @@ private:
                 tcheck
                 Data=(char *)a;
         }
+	int __fastcall VFormat(const char *Format,va_list Args)
+	{
+		tcheck
+		Free();
+		if(Format==NULL)
+		{
+			Data=NULL;
+			return 0;
+		}
+
+		int Size=256;
+		char *Buffer=NULL;
+
+		for(;;)
+		{
+			Buffer=Alloc(Size);
+			if(Buffer==NULL)
+			{
+				Data=NULL;
+				return 0;
+			}
+
+			va_list WorkArgs;
+			va_copy(WorkArgs,Args);
+			int Result=vsnprintf(Buffer,Size,Format,WorkArgs);
+			va_end(WorkArgs);
+
+			if(Result>=0 && Result<Size)
+			{
+				if(Result<1)
+				{
+					Free(Buffer);
+					Data=NULL;
+					return 0;
+				}
+				Data=Buffer;
+				return Result;
+			}
+
+			Free(Buffer);
+			Buffer=NULL;
+
+			if(Result>=0)
+			{
+				Size=Result+1;
+			}
+			else
+			{
+				if(Size>1024*1024)
+				{
+					Data=NULL;
+					return 0;
+				}
+				Size*=2;
+			}
+		}
+	}
 protected:
 public:
         char * c_str(void) const
@@ -110,10 +163,42 @@ public:
                 tcheck
                 return Data?(strlen(Data)):0;
         };
-        __fastcall ~AnsiString(void) noexcept(false)
+        __fastcall ~AnsiString(void)
         {
                 tcheck
                 Free();
+        }
+	int __cdecl printf(const char *Format,...)
+	{
+		tcheck
+		va_list Args;
+		va_start(Args,Format);
+		int Result=VFormat(Format,Args);
+		va_end(Args);
+		return Result;
+	}
+
+	AnsiString& __cdecl sprintf(const char *Format,...)
+	{
+		tcheck
+		va_list Args;
+		va_start(Args,Format);
+		VFormat(Format,Args);
+		va_end(Args);
+		return *this;
+	}
+        __fastcall AnsiString(const char *U,unsigned int Len)
+        {
+                tcheck
+                if(U==NULL){Data=NULL;/*Alloc();*/return;}
+                if(Len<1){Data=NULL;/*Alloc();*/return;}
+                Data = Alloc(Len+1);
+                strncpy(Data,U,Len);
+                Data[Len]='\0';
+        }
+        __fastcall AnsiString(const AnsiString *U)
+        {
+                *this=*U;
         }
         __fastcall AnsiString(const char *U)
         {
@@ -194,7 +279,7 @@ public:
                 tcheck
                 Data=Alloc(37);
                 memset(Data,0,sizeof(char[37]));
-                sprintf(Data,"%f",U);
+                ::sprintf(Data,"%f",U);
         }
         AnsiString& __fastcall operator=(const AnsiString &U)
         {
@@ -431,7 +516,7 @@ public:
                 if(l<1)
                 {
                         Free();
-                        Data=Alloc(il);
+                        Data=Alloc(il+1);
                         strcpy(Data,str.Data);
                         return *this;
                 }
@@ -556,53 +641,7 @@ public:
 		if(Data[0]=='\0')return true;
 		return false;
 	}
-	static AnsiString __fastcall Sprintf(const char *fmt,...)
-	{
-		va_list ap;
-		va_start(ap,fmt);
-		int len=_vscprintf(fmt,ap);
-		va_end(ap);
-		if(len<0)return AnsiString("");
-
-		AnsiString Res;
-		Res.Data=Res.Alloc(len+1);
-
-		va_start(ap,fmt);
-		vsnprintf(Res.Data,len+1,fmt,ap);
-		va_end(ap);
-
-		return Res;
-	}
-	static AnsiString __fastcall SprintfW(const wchar_t *fmt,...)
-	{
-		va_list ap;
-		va_start(ap,fmt);
-		int wlen=_vscwprintf(fmt,ap);
-		va_end(ap);
-		if(wlen<0)return AnsiString("");
-
-		wchar_t *wbuf=(wchar_t *)::HeapAlloc(hProcessHeap,0,(wlen+1)*sizeof(wchar_t));
-		if(!wbuf)return AnsiString("");
-
-		va_start(ap,fmt);
-		vswprintf(wbuf,wlen+1,fmt,ap);
-		va_end(ap);
-
-		int alen=::WideCharToMultiByte(CP_ACP,0,wbuf,wlen+1,NULL,0,NULL,NULL);
-		if(alen<=0)
-		{
-			::HeapFree(hProcessHeap,0,wbuf);
-			return AnsiString("");
-		}
-
-		AnsiString Res;
-		Res.Data=Res.Alloc(alen);
-		::WideCharToMultiByte(CP_ACP,0,wbuf,wlen+1,Res.Data,alen,NULL,NULL);
-
-		::HeapFree(hProcessHeap,0,wbuf);
-		return Res;
-	}
-        char& __fastcall operator [](const int idx) const { return Data[idx-1]; }
+        char& __fastcall operator [](const int idx) { return Data[idx-1]; }
 }*PAnsiString;
 /*extern AnsiString __fastcall operator +(const char*, const AnsiString&)
 {

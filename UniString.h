@@ -1,4 +1,3 @@
-// See LICENSE file for usage restrictions.
 //---------------------------------------------------------------------------
 #ifndef UniStringH
 #define UniStringH
@@ -24,12 +23,12 @@ using namespace std;
 #else
 #include <windows.h>
 #include <vcl.h>
+#include <stdarg.h>
+#ifndef va_copy
+#define va_copy(Dest,Src) ((Dest)=(Src))
+#endif
 #endif
 #ifdef _DEBUG
-#ifdef __GNUC__
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wnonnull-compare"
-#endif//__GNUC__
 #define tcheck if(this==NULL || (DWORD)this<=0x0000FFFF){throw ("Argh! This is NULL!!!!");}
 #else
 #define tcheck
@@ -74,6 +73,7 @@ public:
                 tcheck
                 return AnsiString(Data);
         };
+        __property AnsiString DebugString={ read=GetDebugString };
         #endif
 private:
         wchar_t *Data;
@@ -82,9 +82,9 @@ private:
                 if(U)
                 {
                         //__try{::LocalFree(U);}__except(1){}
-                        if(!::HeapValidate(hProcessHeap,0,U))
+                        if(!HeapValidate(hProcessHeap,0,U))
                         {
-								return;
+                                return;
                         }
                         ::HeapFree(hProcessHeap,0,U);
                         //__try{::HeapFree(hProcessHeap,0,U);}__except(1){}
@@ -118,6 +118,63 @@ private:
                 tcheck
                 Data=(wchar_t *)a;
         }
+	int __fastcall VFormat(const wchar_t *Format,va_list Args)
+	{
+		tcheck
+		Free();
+		if(Format==NULL)
+		{
+			Data=NULL;
+			return 0;
+		}
+
+		int Size=256;
+		wchar_t *Buffer=NULL;
+
+		for(;;)
+		{
+			Buffer=Alloc(Size);
+			if(Buffer==NULL)
+			{
+				Data=NULL;
+				return 0;
+			}
+
+			va_list WorkArgs;
+			va_copy(WorkArgs,Args);
+			int Result=vsnwprintf(Buffer,Size,Format,WorkArgs);
+			va_end(WorkArgs);
+
+			if(Result>=0 && Result<Size)
+			{
+				if(Result<1)
+				{
+					Free(Buffer);
+					Data=NULL;
+					return 0;
+				}
+				Data=Buffer;
+				return Result;
+			}
+
+			Free(Buffer);
+			Buffer=NULL;
+
+			if(Result>=0)
+			{
+				Size=Result+1;
+			}
+			else
+			{
+				if(Size>1024*1024)
+				{
+					Data=NULL;
+					return 0;
+				}
+				Size*=2;
+			}
+		}
+	}
 protected:
 public:
         wchar_t * c_bstr(void) const
@@ -135,10 +192,38 @@ public:
                 tcheck
                 return Data?(wcslen(Data)):0;
         }
-        __fastcall ~UniString(void) noexcept(false)
+        __fastcall ~UniString(void)
         {
                 tcheck
                 Free();
+        }
+	int __cdecl printf(const wchar_t *Format,...)
+	{
+		tcheck
+		va_list Args;
+		va_start(Args,Format);
+		int Result=VFormat(Format,Args);
+		va_end(Args);
+		return Result;
+	}
+
+	UniString& __cdecl sprintf(const wchar_t *Format,...)
+	{
+		tcheck
+		va_list Args;
+		va_start(Args,Format);
+		VFormat(Format,Args);
+		va_end(Args);
+		return *this;
+	}
+        __fastcall UniString(const wchar_t *U,unsigned int Len)
+        {
+                tcheck
+                if(U==NULL){Data=NULL;/*Alloc();*/return;}
+                if(Len<1){Data=NULL;/*Alloc();*/return;}
+                Data = Alloc(Len+1);
+                wcsncpy(Data,U,Len);
+                Data[Len]=L'\0';
         }
         __fastcall UniString(const UniString *U)
         {
@@ -162,7 +247,7 @@ public:
                 Data=Alloc(i+1);
                 Data[strlen(U)]=0;
                 MultiByteToWideChar(
-                        CP_ACP, 0, U, -1, Data, strlen(U)
+                        CP_ACP, 0, U, -1, Data, i+1
                 );
         }
         __fastcall UniString(const wchar_t &U)
@@ -198,7 +283,7 @@ public:
                 Data=Alloc(l+1);
                 Data[strlen(U.c_str())]=0;
                 MultiByteToWideChar(
-                        CP_ACP, 0, U.c_str(), -1, Data, strlen(U.c_str())
+                        CP_ACP, 0, U.c_str(), -1, Data, l+1
                 );
         }
         __fastcall UniString(const int U)
@@ -234,7 +319,7 @@ public:
                 tcheck
                 Data=Alloc(37);
                 memset(Data,0,sizeof(wchar_t[37]));
-                swprintf(Data,L"%f",U);
+                ::swprintf(Data,L"%f",U);
         }
         const UniString& __fastcall operator=(const UniString &U)
         {
@@ -482,7 +567,7 @@ public:
                 if(l<1)
                 {
                         Free();
-                        Data=Alloc(il);
+                        Data=Alloc(il+1);
                         wcscpy(Data,str.Data);
                         return *this;
                 }
@@ -582,7 +667,7 @@ public:
                 {
                         if(ol>=Len)
                         {
-                                memcpy(nData,Data,Len*2);
+                                memcpy(nData,Data,Len*sizeof(*Data));
                         }
                         else
                         {
@@ -597,58 +682,18 @@ public:
                 {
                         Free();
                         Data=nData;
-                        memset(Data,32,Len*2);
+                        for(int i=0;i<Len;i++){Data[i]=L' ';}//memset(Data,32,Len*2);
                         Data[Len]=0;
                 }
                 return *this;
         }
-	bool __fastcall IsEmpty(void) const
+	bool __fastcall IsEmpty(void)
 	{
 		if(Data==NULL)return true;
 		if(Data[0]==L'\0')return true;
 		return false;
 	}
-	static UniString __fastcall Sprintf(const wchar_t *fmt,...)
-	{
-		va_list ap;
-		va_start(ap,fmt);
-
-		// First pass: get required length
-		int len=_vscwprintf(fmt,ap);
-		va_end(ap);
-		if(len<0) return UniString(L"");
-
-		UniString Res;
-		Res.Data=Res.Alloc(len+1);
-
-		va_start(ap,fmt);
-		vswprintf(Res.Data,len+1,fmt,ap);
-		va_end(ap);
-
-		return Res;
-	}
-	static UniString __fastcall SprintfA(const char *fmt,...)
-	{
-		va_list ap;
-		va_start(ap,fmt);
-
-		int len=_vscprintf(fmt,ap);
-		va_end(ap);
-		if(len<0) return UniString(L"");
-
-		char *tmp=(char*)::HeapAlloc(hProcessHeap,0,(len+1));
-		if(!tmp) return UniString(L"");
-
-		va_start(ap,fmt);
-		vsprintf(tmp,fmt,ap);
-		va_end(ap);
-
-		// Convert to wide
-		UniString Res(tmp);
-		::HeapFree(hProcessHeap,0,tmp);
-		return Res;
-	}
-        wchar_t& __fastcall operator [](const int idx) const { return Data[idx-1]; }
+        wchar_t& __fastcall operator [](const int idx) { return Data[idx-1]; }
 }*PUniString;
 /*extern UniString __fastcall operator +(const char*, const UniString&)
 {
